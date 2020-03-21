@@ -37,6 +37,11 @@ class MyHomePage extends StatelessWidget {
 
   }
 
+  void _signOut(){
+    _googleSignIn.signOut();
+    print('User Signed Out');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +63,7 @@ class MyHomePage extends StatelessWidget {
                 ),
                 Padding(padding: const EdgeInsets.all(10.0)),
                 RaisedButton(
-                  onPressed: null,
+                  onPressed: _signOut,
                   child: Text('Sign out'),
                   color: Colors.red,
                   )
