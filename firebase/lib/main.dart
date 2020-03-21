@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,7 +18,24 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key key}) : super(key: key);
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<FirebaseUser> _signIn() async{
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+   );
+
+    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    print("signed in " + user.displayName);
+    return user;
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +50,9 @@ class MyHomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               RaisedButton(
-                onPressed: null,
+                onPressed: () => _signIn()
+                                  .then((FirebaseUser user) => print(user))
+                                  .catchError((e) => print(e)),
                 child: Text('Sign in'),
                 color: Colors.green,
                 ),
