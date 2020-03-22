@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -17,8 +18,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
 
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  final DocumentReference documentReference = Firestore.instance.document('myData/dummy');
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -40,6 +48,24 @@ class MyHomePage extends StatelessWidget {
   void _signOut(){
     _googleSignIn.signOut();
     print('User Signed Out');
+  }
+  void _add(){
+    Map<String,String> data = <String, String>{
+      "name":"tharindu kavishna",
+      "desc":"Flutter Developer"
+    };
+    documentReference.setData(data).whenComplete(() {
+      print("Document Added");
+    }).catchError((e) => print(e));
+  }
+  void _delete(){
+
+  }
+  void _update(){
+
+  }
+  void _fetch(){
+
   }
 
   @override
@@ -66,7 +92,31 @@ class MyHomePage extends StatelessWidget {
                   onPressed: _signOut,
                   child: Text('Sign out'),
                   color: Colors.red,
-                  )
+                  ),
+                Padding(padding: const EdgeInsets.all(10.0)),
+                RaisedButton(
+                  onPressed: _add,
+                  child: Text('Add'),
+                  color: Colors.cyan,
+                  ),
+                Padding(padding: const EdgeInsets.all(10.0)),
+                RaisedButton(
+                  onPressed: _update,
+                  child: Text('Update'),
+                  color: Colors.lightBlue,
+                  ),
+                  Padding(padding: const EdgeInsets.all(10.0)),
+                RaisedButton(
+                  onPressed: _delete,
+                  child: Text('Delete'),
+                  color: Colors.orange,
+                  ),
+                  Padding(padding: const EdgeInsets.all(10.0)),
+                RaisedButton(
+                  onPressed: _fetch,
+                  child: Text('Fetch'),
+                  color: Colors.lightGreen,
+                  ),
             ],            
           ),
         ),
